@@ -55,7 +55,7 @@ sub get_flash {
 
 my($driver,$dbs,$table,$host,$port,$user,$pass);
 $driver = 'mysql';
-$dbs = 'marvel';
+$dbs = 'movies';
 $host = '10.251.7.68';
 $port = '3306';
 $user = 'infradmin';
@@ -63,7 +63,7 @@ $pass = 'prdweb01';
 
 sub connect_db {
                  my $sth = database({driver => 'mysql',
-                                     database => 'marvel',
+                                     database => 'movies',
                                      host => '10.251.7.68',
                                      port => '3306',
                                      username => 'infradmin',
@@ -73,8 +73,7 @@ sub connect_db {
 
 sub init_db {
      my $db = connect_db();
-     #my $filename = 'lib/SdB/schema.sql';
-     my $filename = './lib/SdB/schema.sql';
+     my $filename = 'lib/SdB/schema.sql';
 
      foreach my $item (@column_header){
            print "$item\n";
@@ -82,12 +81,9 @@ sub init_db {
 
      print "\nLooking for schema filename:\n\n$filename\n";
       my $pwd =`pwd`;
-       print "\$pwd =$pwd\n";
-        my $cmd = "/usr/bin/ls -alt ".$filename;
-       # my $out = `/usr/bin/ls -al`;
-         my $out = `$cmd`;
+      print "\$pwd =$pwd\n";
+       my $out = `/usr/bin/ls -al`;
         if ($out){ print "File exist!\n\t\$out = $out\n";};
-
           my $schema = read_file( $filename );
           $db->do($schema) or die $db->errstr;
              # print "Trying second create: $filename2!\n\n"; 
@@ -167,7 +163,7 @@ post '/add' => sub {
 
      my $db = connect_db();
      # my $sql = 'insert into req_note (req_n_id, req_n_parent, req_n_tag, req_n_type, req_n_progress, req_n_statusfile, req_n_note) values (?, ?, ?, ?, ?, ?, ?)';
-     my $sql = 'insert into movies (movie_id,title,rating,phase,year_pub,description) values (?, ?, ?, ?, ?, ?)';
+     my $sql = 'insert into movies (movie_id,title,rating,phase,year_pub,description) values (?, ?, ?, ?, ?, ?)'
      my $sth = $db->prepare($sql) or die $db->errstr;
      # $sth->execute(params->{'req_n_id'}, params->{'req_n_parent'}, params->{'req_n_tag'}, params->{'req_n_type'}, params->{'req_n_progress'}, params->{'req_n_statusfile'}, params->{'req_n_note'}) or die $sth->errstr;
        $sth->execute(params->{'movie_id'}, params->{'title'}, params->{'rating'}, params->{'phase'}, params->{'year_pub'}, params->{'req_n_statusfile'}, params->{'req_n_note'}) or die $sth->errstr;
