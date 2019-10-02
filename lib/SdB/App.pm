@@ -111,7 +111,7 @@ hook before_template => sub {
 get '/' => sub {
      my $db = connect_db();
      # my $sql = 'select id, req_n_id, req_n_parent, req_n_tag, req_n_type, req_n_progress, req_n_statusfile, req_n_note from req_note order by req_n_id';
-     my $sql = 'select movie_id, title, rating, phase, year_pub, left(description, 26) from movies';
+     my $sql = 'select movie_id, title, rating, phase, year_pub, description from movies';
      my $sth = $db->prepare($sql) or die $db->errstr;
       print "$db->errstr\n\n";
 
@@ -167,10 +167,10 @@ post '/add' => sub {
 
      my $db = connect_db();
      # my $sql = 'insert into req_note (req_n_id, req_n_parent, req_n_tag, req_n_type, req_n_progress, req_n_statusfile, req_n_note) values (?, ?, ?, ?, ?, ?, ?)';
-     my $sql = 'insert into movies (movie_id,title,rating,phase,year_pub,description) values (?, ?, ?, ?, ?, ?)';
+     my $sql = 'insert into movies (title,rating,phase,year_pub,description) values (?, ?, ?, ?, ? )';
      my $sth = $db->prepare($sql) or die $db->errstr;
      # $sth->execute(params->{'req_n_id'}, params->{'req_n_parent'}, params->{'req_n_tag'}, params->{'req_n_type'}, params->{'req_n_progress'}, params->{'req_n_statusfile'}, params->{'req_n_note'}) or die $sth->errstr;
-       $sth->execute(params->{'movie_id'}, params->{'title'}, params->{'rating'}, params->{'phase'}, params->{'year_pub'}, params->{'req_n_statusfile'}, params->{'req_n_note'}) or die $sth->errstr;
+       $sth->execute(params->{'title'}, params->{'rating'}, params->{'phase'}, params->{'year_pub'}, params->{'description'}) or die $sth->errstr;
 
        set_flash('Nice!  New entry posted!');
        redirect '/';
